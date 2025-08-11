@@ -1,10 +1,11 @@
 import { useRef, useState, useEffect } from "react";
 import { faCheck, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import axios from "./axios";
 
 const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z0-9!@#$%^&*]{8,24}$/;
-
+const REGISTER_URL = "/register";
 const Register = () => {
   const userRef = useRef();
   const errRef = useRef();
@@ -58,25 +59,42 @@ const Register = () => {
     }
     
     try {
-      // Here you would typically send the data to your backend
-      console.log("Registration data:", { user, pwd });
+     const response = await axios.post(REGISTER_URL, JSON.stringify({ user, pwd }), {
+        Headers: { "content-type": "application/json"},
+        withCredentials: true
+      });
+      console.log(response.data);
+      console.log(response.accessToken);
+      console.log(JSON.stringify(response));
       setSuccess(true);
+      // clear input fields
+      setUser('');
+      setPwd('');
     } catch (err) {
-      setErrMsg("Registration Failed");
-      errRef.current.focus();
+      if (!err.response) {
+      setErrMsg("No Server Response");
+    } else if (err.response?.status === 409){
+       setErrMsg('Username Taken');
+    } else {
+      setErrMsg('Registration Faild')
     }
+    errMsg.current.focus();
+  }
   }
 
   return (
     <>
-      {success ? (
-        <div className="register-container">
-          <section className="register-section">
-            <h1>Success!</h1>
-            <p>Your account has been created successfully.</p>
-          </section>
-        </div>
-      ) : (
+    {success ? (
+      <div className="register-container">
+        <section className="register-section">
+          <h1>Success!</h1>
+          <p>Your account has been created successfully.</p>
+          <p className="signin-cta">
+            Proceed to <a href="/signin" className="signin-link">Sign In</a>
+          </p>
+        </section>
+      </div>
+    ) : (
         <div className="register-container">
           <section className="register-section">
             <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">
@@ -84,7 +102,6 @@ const Register = () => {
             </p>
             <h1>Register</h1>
             <form className="register-form" onSubmit={handleSubmit}>
-              
               <div className="form-group">
                 <label htmlFor="username">
                   Username:
@@ -181,17 +198,17 @@ const Register = () => {
               </div>
 
               <button 
-                type="submit" 
                 className="submit-btn"
-                disabled={!validName || !validPwd || !validMatch}
-              >
-                Sign Up
-              </button>
+                disabled={!validName || !validPwd || !validMatch ? true : false}
+              >  Sign Up </button>
             </form>
+            <p className="signin-cta">
+              Already registered? <a href="/signin" className="signin-link">Sign In</a>
+            </p>
           </section>
         </div>
       )}
-    </>
+   </>
   );
 }
 

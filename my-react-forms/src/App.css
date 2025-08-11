@@ -144,6 +144,26 @@
   box-shadow: none;
 }
 
+/* Sign-in call to action */
+.signin-cta {
+  margin-top: 1rem;
+  text-align: center;
+  color: #cbd5e1; /* slate-300 */
+}
+
+.signin-cta .signin-link {
+  color: #60a5fa; /* blue-400 */
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signin-cta .signin-link:hover,
+.signin-cta .signin-link:focus {
+  text-decoration: underline;
+  color: #93c5fd; /* blue-300 */
+  outline: none;
+}
+
 /* Responsive design */
 @media (max-width: 480px) {
   .register-container {
@@ -152,5 +172,10 @@
   
   .register-section {
     padding: 1.5rem;
+  }
+  
+  .signin-cta {
+    font-size: 0.95rem;
+    margin-top: 0.75rem;
   }
 }
