@@ -1,7 +1,7 @@
 import './App.css'
 import { Login } from './Login';
 import {Routes, Route} from 'react-router-dom'
-import {Layout} from './Layout'
+import {Layout} from '../src/Layout'
 import Register from './Register'
 import RequiredAuth from './RequiredAuth';
 
