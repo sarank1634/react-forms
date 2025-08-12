@@ -1,16 +1,20 @@
-import { useRef,useContext, useEffect, useState } from 'react'
-
+import { useRef, useEffect, useState } from 'react'
+import useAuth from './hooks/useAuth';
+import {Link, useNavigate, useLocation} from 'react-router-dom'
 import axios from './api/axios';
 const LOGIN_URL = '/auth'
 
-import { AuthContext } from './context/AuthProvider';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import './login.css'
 
 
 export const Login = () => {
-    const {setAuth} = useContext(AuthContext);
+    const {setAuth} = useAuth();
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.pathname || "/";
 
     const userRef = useRef();
     const errRef = useRef(null);
@@ -18,7 +22,6 @@ export const Login = () => {
     const [user, setUser] = useState('');
     const [pwd, setPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
-    const [success, setSuccess] = useState(false);
     const [showPwd, setShowPwd] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -47,9 +50,9 @@ export const Login = () => {
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
             setAuth({user, pwd, roles, accessToken});
-        setSuccess(true),
         setUser(''),
         setPwd('')
+        navigate(from, {replace: true});
         } catch (error) {
             if(!error.response){
                 setErrMsg('No Server Response')
@@ -66,20 +69,8 @@ export const Login = () => {
         }
     }
 
-    return ( 
-    <>     
-       {success ? (
-        <section className="form-container">
-          <div className="form-card">
-            <h1>Welcome back</h1>
-            <p className="success">You are logged in!</p>
-            <p style={{ marginTop: '1rem' }}>
-                <a href="#">Go to Home</a>
-            </p>
-          </div>
-        </section>
-       ):(
-       <section className="form-container">
+    return (
+     <section className="form-container">
           <div className="form-card">
             <p ref={errRef} className={errMsg ? "errMsg" : "offscreen"}
               aria-live="assertive">{errMsg}</p>
@@ -143,7 +134,6 @@ export const Login = () => {
             <p className="hint">Need an account? <a href="link">Sign up</a></p>
           </div>
         </section>
-       )}
-    </>
+  
     )
 }
