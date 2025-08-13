@@ -10,7 +10,7 @@ import './login.css'
 
 
 export const Login = () => {
-    const {setAuth} = useAuth();
+    const {setAuth, presist, setPresist} = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -50,7 +50,7 @@ export const Login = () => {
             console.log(JSON.stringify(response?.data))
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
-            setAuth({user, pwd, roles, accessToken});
+            setAuth({user, pwd, roles, accessToken});  
         setUser(''),
         setPwd('')
         navigate(from, {replace: true});
@@ -60,16 +60,21 @@ export const Login = () => {
             } else if ( error.response?.status === 400) {
                 setErrMsg('Missing username or password')
             } else if(error.response?.status === 401){
-                setErrMsg('Login Failed')
+                setErrMsg('Unauthorized')
             } else {
                 setErrMsg('Login Failed');
             }
             errRef.current.focus();
-        }  finally {
-          setIsLoading(false);
-        }
+        } 
+    }
+      
+    const togglePersist = () => {
+      setPresist(prev => !prev);
     }
 
+    useEffect( () => {
+       localStorage.setItem("presist", presist)
+    }, [presist])
     return (
      <section className="form-container">
           <div className="form-card">
@@ -131,6 +136,14 @@ export const Login = () => {
               >
                 {isLoading ? 'Signing in…' : 'Sign In'}
               </button>
+              <div className="presist">
+                <input type="checkbox"
+                id='persist'
+                onChange={togglePersist} 
+                checked={presist}
+                />
+                <label htmlFor="persist">Trust this device</label>
+              </div>
             </form>
             <p className="hint">Need an account? <a href="/register">Sign up</a></p>
           </div>
