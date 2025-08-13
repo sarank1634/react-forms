@@ -2,14 +2,15 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useReferenceToken from '../src/hooks/UseRefreshToken';
 import useAuth from "./hooks/useAuth";
-import { use } from "react";
-
+import useToggle from "./hooks/useToggle";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 const presistLogin = () => {
 
   const [isLoading, setLoading] = useState(true);
   const refresh = useReferenceToken();
-  const { auth, presist } = useAuth();
+  const { auth } = useAuth();
+  const [presist] = useToggle("presist", false);
 
   useEffect(() => {
      let isMounted = true;  
@@ -34,7 +35,7 @@ const presistLogin = () => {
 
   return (
     <>
-      {!presist
+      { presist && !auth?.accessToken
         ? <Outlet />
         : isLoading ?
           <p>Loading...</p>

@@ -3,6 +3,9 @@ import useAuth from './hooks/useAuth';
 import {Link, useNavigate, useLocation} from 'react-router-dom'
 import axios from './api/axios';
 const LOGIN_URL = '/auth'
+import useInput from './hooks/useInput';
+import useToggle from './hooks/useToggle';
+
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -10,7 +13,7 @@ import './login.css'
 
 
 export const Login = () => {
-    const {setAuth, presist, setPresist} = useAuth();
+    const {setAuth} = useAuth();
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -19,11 +22,12 @@ export const Login = () => {
     const userRef = useRef();
     const errRef = useRef(null);
 
-    const [user, setUser] = useState('');
-    const [pwd, setPwd] = useState('');
+    const [user, resetUser, userAttribute] = useInput('user','')//useState('');
+    const [pwd, resetPwd] = useState('');
     const [errMsg, setErrMsg] = useState('');
     const [showPwd, setShowPwd] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [check, toggleCheck ] = useToggle('presist', false)
 
 
     useEffect(() => {
@@ -46,12 +50,13 @@ export const Login = () => {
             {
               headers: { 'Content-Type': 'application/json' },
               withCredentials: true
-            });
+            }); 
             console.log(JSON.stringify(response?.data))
             const accessToken = response?.data?.accessToken;
             const roles = response?.data?.roles;
             setAuth({user, pwd, roles, accessToken});  
-        setUser(''),
+        //setUser(''),
+        reset();
         setPwd('')
         navigate(from, {replace: true});
         } catch (error) {
@@ -68,13 +73,14 @@ export const Login = () => {
         } 
     }
       
-    const togglePersist = () => {
-      setPresist(prev => !prev);
-    }
+    // const togglePersist = () => {
+    //   setPresist(prev => !prev);
+    // }
 
-    useEffect( () => {
-       localStorage.setItem("presist", presist)
-    }, [presist])
+    // useEffect( () => {
+    //    localStorage.setItem("presist", presist)
+    // }, [presist])
+
     return (
      <section className="form-container">
           <div className="form-card">
@@ -93,8 +99,7 @@ export const Login = () => {
                     id="username"
                     ref={userRef}
                     autoComplete="off"
-                    onChange={(e) => setUser(e.target.value)}
-                    value={user}
+                    {...userAttribute }
                     required
                     placeholder="Enter your username"
                     aria-invalid={!!errMsg}
@@ -139,8 +144,8 @@ export const Login = () => {
               <div className="presist">
                 <input type="checkbox"
                 id='persist'
-                onChange={togglePersist} 
-                checked={presist}
+                onChange={toggleCheck} 
+                checked={check}
                 />
                 <label htmlFor="persist">Trust this device</label>
               </div>
