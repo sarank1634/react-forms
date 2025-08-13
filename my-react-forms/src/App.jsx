@@ -7,7 +7,11 @@ import RequiredAuth from './RequiredAuth';
 import Editor from './Editor';
 import Admin from './Admin';
 import Lounge from './Lounge';
+import PresistLogin from '../src/PresistLogin'
+import Unauthorized from '../src/Unauthorized'
 
+
+import Home from './Home';
 const ROLES = {
   'User' : 20201,
   'Editor' : 1984,
@@ -18,8 +22,17 @@ function App() {
     <>
     <Routes>
       <Route path='/' element={<Layout />} >
-        <Route index element={<Login />} />
-        <Route path='register' element={<Register />} />
+      {/* public routes */}
+      
+        <Route path='/login' element={<Login />} /> 
+        <Route path='/register' element={<Register />} />
+        <Route path='/unauthorized' element={<Unauthorized />} />
+
+        {/* we want to protect these routes */}
+        <Route element={<PresistLogin />}  >
+          <Route element={<RequiredAuth allowedRoles={[ROLES.User]} />}>
+          <Route path='/' element={<Home />} />
+          </Route> 
 
         <Route element={<RequiredAuth allowedRoles={[ROLES.Editor]} />}>
          <Route path='editor' element={<Editor />} />
@@ -29,7 +42,11 @@ function App() {
           <Route path='admin' element={<Admin />} />
         </Route>
       
+        <Route element={<RequiredAuth allowedRoles={[ROLES.Editor  ,ROLES.Admin]} />}>
         <Route path='lounge' element={<Lounge />} />
+        </Route>
+        </Route>
+
         </Route>
       
     </Routes>

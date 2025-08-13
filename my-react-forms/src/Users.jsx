@@ -1,10 +1,13 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import axios from'../src/api/axios'
+import { Navigate, useNavigate, useLocation } from 'react-router-dom'
 // import UseRefreshToken from './hooks/UseRefreshToken'
 
 const Users = () => {
     const [users, setUsers] = useState();
+    const navigate = useNavigate();
+    const location = useLocation();
     // const [refresh, useRefresh] = useState();
 
     useEffect(() => {
@@ -19,7 +22,8 @@ const Users = () => {
                 console.log(response.data);
                 isMounted && setUsers(response.data);
             } catch (error) {
-                console.error(error)
+                console.error(error);
+                navigate('/login',{state : {from: location   }, replace: true});
             }
         }
            getUsers(); 

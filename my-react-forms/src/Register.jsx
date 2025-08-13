@@ -203,7 +203,7 @@ const Register = () => {
               >  Sign Up </button>
             </form>
             <p className="signin-cta">
-              Already registered? <a href="/signin" className="signin-link">Sign In</a>
+              Already registered? <a href="/login" className="signin-link">Sign In</a>
             </p>
           </section>
         </div>

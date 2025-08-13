@@ -27,8 +27,9 @@ export const Login = () => {
 
 
     useEffect(() => {
-        userRef.current.focus();
-    }, [user, pwd])
+        // Focus username only on initial mount to avoid focus jumping while typing password
+        userRef.current?.focus();
+    }, [])
 
     // Clear error message on input change
     useEffect(() => {
@@ -131,7 +132,7 @@ export const Login = () => {
                 {isLoading ? 'Signing in…' : 'Sign In'}
               </button>
             </form>
-            <p className="hint">Need an account? <a href="link">Sign up</a></p>
+            <p className="hint">Need an account? <a href="/register">Sign up</a></p>
           </div>
         </section>
   
