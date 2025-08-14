@@ -9,7 +9,13 @@ import Admin from './Admin';
 import Lounge from './Lounge';
 import PresistLogin from '../src/PresistLogin'
 import Unauthorized from '../src/Unauthorized'
-
+import Public from './Public'
+import Login from './Login'
+import Register from './Register'
+import Welcome from './Welcome'
+import Editor from './Editor'
+import Admin from './Admin'
+import Lounge from './Lounge'
 
 import Home from './Home';
 const ROLES = {
@@ -20,6 +26,23 @@ const ROLES = {
 function App() {
   return (
     <>
+    <Routes>
+      <Route path='/' element={<Layout />} >
+      {/* public routes */}
+      <Route index element={<Public />} /> 
+      <Route path='/login' element={<Login />} /> 
+
+      {/* protected routes */}
+      <Route element={<RequiredAuth /> } >
+        <Route path='welcome' element={<Welcome />} />
+      </Route>
+
+
+      <Route path='/unauthorized' element={<Unauthorized />} />
+      </Route>
+      </Routes>
+
+
     <Routes>
       <Route path='/' element={<Layout />} >
       {/* public routes */}
