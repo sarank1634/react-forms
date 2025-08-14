@@ -19,8 +19,10 @@ const Users = () => {
                 const response = await axios.get('/users', {
                     signal: controller.signal  
                 });
-                console.log(response.data);
-                isMounted && setUsers(response.data);
+
+                const userNames = response.data.map((user) => user.username);
+                console.log(userNames);
+                isMounted && setUsers(userNames);
             } catch (error) {
                 console.error(error);
                 navigate('/login',{state : {from: location   }, replace: true});
@@ -37,11 +39,11 @@ const Users = () => {
   return (
     <article>
         <h2>Users List</h2>
-        {users?.lenght
+        {users?.length
         ?(
             <ul>
-                {users.map((users, i ) => <li key={i}>
-                    {user?.username}
+                {users.map((user, i ) => <li key={i}>
+                    {user}
                 </li> )}
             </ul>
         ) : <p>No users to display</p>

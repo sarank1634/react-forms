@@ -6,11 +6,9 @@ const LOGIN_URL = '/auth'
 import useInput from './hooks/useInput';
 import useToggle from './hooks/useToggle';
 
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser, faLock, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import './login.css'
-
 
 export const Login = () => {
     const {setAuth} = useAuth();
@@ -23,7 +21,7 @@ export const Login = () => {
     const errRef = useRef(null);
 
     const [user, resetUser, userAttribute] = useInput('user','')//useState('');
-    const [pwd, resetPwd] = useState('');
+    const [pwd, resetPwd, pwdAttribute] = useInput('pwd','');
     const [errMsg, setErrMsg] = useState('');
     const [showPwd, setShowPwd] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -53,11 +51,10 @@ export const Login = () => {
             }); 
             console.log(JSON.stringify(response?.data))
             const accessToken = response?.data?.accessToken;
-            const roles = response?.data?.roles;
-            setAuth({user, pwd, roles, accessToken});  
+            setAuth({user, accessToken});  
         //setUser(''),
-        reset();
-        setPwd('')
+        resetUser();
+        resetPwd();
         navigate(from, {replace: true});
         } catch (error) {
             if(!error.response){
@@ -116,8 +113,7 @@ export const Login = () => {
                   <input
                     type={showPwd ? 'text' : 'password'}
                     id="password"
-                    onChange={(e) => setPwd(e.target.value)}
-                    value={pwd}
+                    {...pwdAttribute}
                     required
                     placeholder="Enter your password"
                     aria-invalid={!!errMsg}
